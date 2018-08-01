@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  project:
+    container_name: python-basic
+    build: .
