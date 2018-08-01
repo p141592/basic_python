@@ -21,7 +21,7 @@ kill_container () {
 
 build (){
     echo '=============BUILD================='
-    docker build -t ${REGISTRY}/${CONTAINER_NAME} ${DIRECTORY}/.
+    docker build -t ${REGISTRY}/${CONTAINER_NAME} ${DIRECTORY}
 }
 
 
