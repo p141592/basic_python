@@ -2,5 +2,5 @@ version: '3'
 
 services:
   project:
-    container_name: python-basic
+    container_name: djangoup-python
     build: .

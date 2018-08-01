@@ -2,7 +2,7 @@
 
 COMMAND=$1
 REGISTRY='0.0.0.0:5000'
-CONTAINER_NAME='python-basic'
+CONTAINER_NAME='djangoup-python'
 PORTS='8000:8000'
 DIRECTORY=$(pwd)
 

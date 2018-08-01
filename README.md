@@ -1,12 +1,10 @@
-# Python basic image
+# DjangoUP Python basic image
 
 ### Before start 
 
 Everything what you need you can find in project root.
 
 Project settings `.env`
-
-CI control `.gitlab-ci.yml`
 
 Project source `src`
 
@@ -20,13 +18,13 @@ You can make control script like global util and run anywhere
 
 * Open project root directory 
 
-* Create link `ln -s $(pwd)/control.sh /usr/local/bin/datalight`
+* Create link `ln -s $(pwd)/control.sh /usr/local/bin/djangoup`
 
-* Get except rights for script `chmod +x /usr/local/bin/datalight`
+* Get except rights for script `chmod +x /usr/local/bin/djangoup`
 
 ### Run
 
-`datalight start` 
+`djangoup start` 
 
 Control script commands:
 
