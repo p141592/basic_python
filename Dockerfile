@@ -26,8 +26,6 @@ USER www
 
 COPY ./src /opt/application
 
-WORKDIR /opt/application
-
 CMD djangoup start
 
 EXPOSE 8000

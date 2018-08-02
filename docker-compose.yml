@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   project:
     build: .
@@ -9,14 +10,3 @@ services:
     - 8000:8000
     volumes:
     - ./src:/opt/application
-    networks:
-    - djup
-
-volumes:
-  db-data: {}
-  redis-data: {}
-
-networks:
-  djup:
-    external:
-      name: djup_network
