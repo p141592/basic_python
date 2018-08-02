@@ -24,11 +24,11 @@ You can make control script like global util and run anywhere
 
 ### Run
 
-`djangoup start` 
+`$ djangoup compose-start` 
 
 Control script commands:
 
-```bash
+```text
 push
   push docker image to registry
 

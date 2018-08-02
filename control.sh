@@ -71,6 +71,7 @@ echo '=============STOP================='
 
 'compose-start')
 echo '=============COMPOSE START================='
+    docker network create djup_network
     docker-compose -f ${DIRECTORY}/docker-compose.yml up --build
     sleep 2
     docker ps
