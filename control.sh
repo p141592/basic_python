@@ -26,6 +26,11 @@ build (){
 
 
 case ${COMMAND} in
+'demo')
+    ./control.sh daemon && ./control.sh logs
+
+;;
+
 'push')
 build
 echo '=============PUSH================='
