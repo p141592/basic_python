@@ -12,19 +12,9 @@ Project requirements `requirements.pip`
 
 Script for start project localy `controle.sh`
 
-### Start develop
-
-You can make control script like global util and run anywhere
-
-* Open project root directory 
-
-* Create link `ln -s $(pwd)/control.sh /usr/local/bin/djangoup`
-
-* Get except rights for script `chmod +x /usr/local/bin/djangoup`
-
 ### Run
 
-`$ djangoup compose-start` 
+`$ ./control.sh daemon && ./control.sh logs` 
 
 Control script commands:
 
