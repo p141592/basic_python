@@ -46,14 +46,14 @@ echo '=============LOGS================='
 build
 kill_container
 echo '=============LOCAL================='
-    docker run -it -p ${PORTS} --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME} bash
+    docker run -it -p ${PORTS} --env-file .env --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME} bash
 ;;
 
 'daemon')
 build
 kill_container
 echo '=============DAEMON================='
-    docker run -d -p ${PORTS} --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME}
+    docker run -d -p ${PORTS} --env-file .env --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME}
     sleep 2
     docker ps
 ;;
@@ -62,7 +62,7 @@ echo '=============DAEMON================='
 build
 kill_container
 echo '=============START================='
-    docker run -p ${PORTS} --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME}
+    docker run -p ${PORTS} --env-file .env --name ${CONTAINER_NAME} ${REGISTRY}/${CONTAINER_NAME}
     sleep 2
     docker ps
 ;;
@@ -76,7 +76,7 @@ echo '=============STOP================='
 
 'compose-start')
 echo '=============COMPOSE START================='
-    docker-compose -f ${DIRECTORY}/docker-compose.yml up --build
+    docker-compose -f ${DIRECTORY}/docker-compose.yml --env-file .env up --build
     sleep 2
     docker ps
 ;;
@@ -101,36 +101,6 @@ echo ${PORTS}
 
 echo '# DIRECTORY'
 echo ${DIRECTORY}
-
-echo 'COMMANDS'
-echo '-----------------'
-echo 'push'
-echo '  push docker image to registry'
-echo ''
-echo 'logs'
-echo '  follow to docker container logs'
-echo ''
-echo 'local'
-echo '  start docker container with `-it` arguments'
-echo ''
-echo 'daemon'
-echo '  start docker container in background'
-echo ''
-echo 'start'
-echo '  start docker container in interactive'
-echo ''
-echo 'stop'
-echo '  stop docker container'
-echo ''
-echo 'compose-start'
-echo '  start background docker-compose project'
-echo ''
-echo 'compose-stop'
-echo '  stop background docker-compose project'
-echo ''
-echo 'help'
-echo '  this page'
-echo '-----------------'
 
 esac
 
