@@ -44,3 +44,5 @@ compose-stop
   stop background docker-compose project
 
 ``` 
+
+[RU Guide](https://github.com/djangoup/basic_python/wiki/User-guide-%5BRU%5D)
