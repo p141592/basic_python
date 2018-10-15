@@ -1,23 +1,27 @@
-FROM python:3.6
-RUN apt-get update
+FROM python:3.6-alpine as builder
 
-COPY requirements.pip /tmp/
-RUN pip install -r /tmp/requirements.pip
+RUN apk update && apk add build-base postgresql-dev libffi-dev python-dev zlib-dev jpeg-dev
+RUN mkdir /install
+
+
+COPY requirements.freezed.pip /requirements.pip
+WORKDIR /
+
+RUN pip install --prefix=/install -r /requirements.pip
+RUN  ls /install
+
+FROM python:3.6-alpine
+RUN apk update && apk add postgresql-dev libffi-dev zlib-dev jpeg-dev bash
+COPY --from=builder /install /usr/local
 
 COPY ./entrypoint /djangoup/
 RUN chmod -R 755 /djangoup/
 ENV PATH /djangoup:$PATH
 
-# Prepare user
-RUN useradd --create-home www
 
-# Clean
-RUN apt-get clean
-
-USER www
-
-COPY ./src /opt/application
-
-CMD djangoup start
+COPY ./src /opt/application/
+WORKDIR /opt/application
 
 EXPOSE 8000
+
+CMD djangoup start
