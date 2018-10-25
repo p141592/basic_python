@@ -22,6 +22,4 @@ ENV PATH /djangoup:$PATH
 COPY ./src /opt/application/
 WORKDIR /opt/application
 
-EXPOSE 8000
-
 CMD djangoup start
