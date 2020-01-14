@@ -4,7 +4,7 @@ RUN apk update && apk add build-base postgresql-dev libffi-dev python-dev zlib-d
 RUN mkdir /install
 
 
-COPY requirements.freezed.pip /requirements.pip
+COPY requirements.pip /requirements.pip
 WORKDIR /
 
 RUN pip install --prefix=/install -r /requirements.pip
