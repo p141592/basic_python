@@ -12,29 +12,13 @@ COPY --from=build-env /usr/local/lib/python3.7/site-packages /usr/local/lib/pyth
 COPY ./src /opt/application/
 WORKDIR /opt/application/
 
-COPY ./djangoup.sh /djangoup/djangoup
-RUN chmod -R 755 /djangoup/
-ENV PATH /djangoup:/opt/application/:$PATH
+COPY entrypoint.sh /usr/local/bin/project
 ENV PYTHONPATH /usr/local/lib/python3.7/site-packages
 ENV PYTHONPATH /opt/application/
-
-ENV STATIC_ROOT /var/www/static/
-ENV MEDIA_ROOT /var/www/media/
-RUN django-admin collectstatic --noinput --pythonpath /opt/application/ --settings core.settings
 ##
 
-# Собираю nginx со статикой проекта
-FROM nginx as proxy
-
-COPY configs/nginx.conf /etc/nginx/nginx.conf
-RUN mkdir -p /data/nginx/cache
-
-EXPOSE 80
-EXPOSE 8000
-
-#
 FROM project as PROD
-CMD djangoup prod
+CMD project prod
 
 FROM project as DEV
-CMD djangoup dev
+CMD project dev
