@@ -1,33 +1,23 @@
 DOCKER_IMAGE = base_project
-DOCKER_REGISTRY = registry.gitlab.com
+DOCKER_REGISTRY = registry.gitlab.com # Registry where you want store your Docker images
 PORTS = 8000:8000
-SHELL := /bin/bash
 
 requirements:
 	pip install -r requirements.pip
 
-venv:
-	python -m venv venv
-	chroot ${PWD} source /venv/bin/activate
-
-unpack: venv requirements
+unpack: requirements
 
 build:
 	docker build -t $(DOCKER_IMAGE) .
 
 run:
-	docker run -p ${PORTS} --rm $(DOCKER_IMAGE)
-#
-# local unpack:
-# 	source ${PWD}/.env
-# 	set +a
-# 	./entrypoint.sh
+	docker run -p ${PORTS} --rm --env-file .env $(DOCKER_IMAGE)
 
 push:
 	docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${tag:-"latest"}
 
 test:
-	pytest tests${TEST_CASE}
+	pytest -vv tests${TEST_CASE}
 
-pip-compile:
+freez:
 	pip-compile --generate-hashes --output-file requirements.pip requirements.in
