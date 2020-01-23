@@ -1,0 +1,7 @@
+ingress:
+  hosts:
+    - example.com
+
+env:
+  SENTRY_ENVIRONMENT: prod
+  DATABASE_URL:
