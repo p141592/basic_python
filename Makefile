@@ -2,7 +2,7 @@
 DOCKER_REGISTRY = p141592
 PORTS = 8000:8000
 TAG = latest
-PROJECT_NAME = base_python
+PROJECT_NAME = basic_python
 ENV = dev
 
 requirements:
