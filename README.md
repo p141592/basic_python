@@ -1,7 +1,6 @@
 # Python projects template
 
-## Before start 
-
+[![asciicast](https://asciinema.org/a/296455.svg)](https://asciinema.org/a/296455)
 
 ### Run
 
