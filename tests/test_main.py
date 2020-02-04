@@ -1,4 +1,3 @@
-class TestInfra:
-    def test_start(self):
-        # Проверка, что контейнер запускается и
-        pass
+def test_start(client):
+    response = client.get('/')
+    assert response.status_code == 200

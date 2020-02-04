@@ -5,22 +5,18 @@ TAG = latest
 PROJECT_NAME = basic_python
 GCLOUD-PROJECT-ID = home-260209
 ENV = dev
+MEMORY_LIMIT = ${MEMORY_LIMIT:-25M}
 
-requirements:
-	pip install --upgrade pip
-	pip install poetry
-	poetry install
+# local
+unpack: activate
+	poetry install 
 
-unpack: requirements
+activate: venv 
+	pip install --user poetry
+	poetry env use venv/bin/python
 
-build: freez
-	docker build -t ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} .
-
-run: build
-	docker run -p ${PORTS} --rm -d --env-file .env ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
-
-push: build
-	docker push ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+venv:
+	python -m venv venv
 
 test:
 	pytest -vv tests${TEST_CASE}
@@ -31,8 +27,19 @@ lock:
 freez: lock
 	poetry export -f requirements.txt > requirements.pip
 
-helm: freez push
-	helm upgrade -i ${ENV}-${PROJECT_NAME} --wait --set image.tag=${TAG} -f k8s/${ENV}-values.yaml k8s/${PROJECT_NAME}
+# pre production
+build: freez
+	docker build -t ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} .
 
+run: build
+	docker run -it -p ${PORTS} --rm --env-file .env ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+
+push: build
+	docker push ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+
+# deploy
 gcloud-deploy: push
-	gcloud run deploy --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --platform managed
+	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars KEY1=VALUE1,KEY2=VALUE2
+
+gcloud-remove:
+	gcloud run service delete ${PROJECT_NAME}
