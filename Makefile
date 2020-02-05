@@ -5,7 +5,7 @@ TAG = latest
 PROJECT_NAME = basic_python
 GCLOUD-PROJECT-ID = home-260209
 ENV = dev
-MEMORY_LIMIT = ${MEMORY_LIMIT:-25M}
+MEMORY_LIMIT = 25M
 
 # local
 unpack: activate
@@ -19,7 +19,7 @@ venv:
 	python -m venv venv
 
 test:
-	pytest -vv tests${TEST_CASE}
+	pytest -vv ${TEST_CASE}
 
 lock:
 	poetry lock 
@@ -28,7 +28,7 @@ freez: lock
 	poetry export -f requirements.txt > requirements.pip
 
 # pre production
-build: freez
+build: test freez
 	docker build -t ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} .
 
 run: build
@@ -39,7 +39,9 @@ push: build
 
 # deploy
 gcloud-deploy: push
-	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars KEY1=VALUE1,KEY2=VALUE2
+	envs=$(python utils/convert_env.py)
+	echo ${envs}
+	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars ${envs}
 
 gcloud-remove:
 	gcloud run service delete ${PROJECT_NAME}
