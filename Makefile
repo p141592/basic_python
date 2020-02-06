@@ -2,10 +2,11 @@
 DOCKER_REGISTRY = gcr.io/${GCLOUD-PROJECT-ID}
 PORTS = 8080:8080
 TAG = latest
-PROJECT_NAME = basic_python
+PROJECT_NAME = basic-python
 GCLOUD-PROJECT-ID = home-260209
 ENV = dev
-MEMORY_LIMIT = 25M
+MEMORY_LIMIT = 50M
+ENV_VARIABLES = $(shell ./utils/convert_env.py $(shell pwd)/.env)
 
 # local
 unpack: activate
@@ -39,9 +40,7 @@ push: build
 
 # deploy
 gcloud-deploy: push
-	envs=$(python utils/convert_env.py)
-	echo ${envs}
-	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars ${envs}
+	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars ${ENV_VARIABLES}
 
 gcloud-remove:
 	gcloud run service delete ${PROJECT_NAME}

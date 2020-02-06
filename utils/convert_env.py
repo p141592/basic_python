@@ -14,8 +14,9 @@ def convert(filename):
         if re.match(r,  line):
             key, value = line.strip().split('=')
             result[key] = value
-    return ','.join([f'{key}={value}' for key, value in result.items()])
+    return ','.join([f'{key}="{value}"' for key, value in result.items()])
 
 if __name__ == '__main__':
-    _env = BASE_DIR.joinpath('.env')
-    sys.exit(convert(_env))
+    _env = Path(sys.argv[1] or BASE_DIR.joinpath('.env'))
+    print(convert(_env))
+    sys.exit(0)
