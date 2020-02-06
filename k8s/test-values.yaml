@@ -1,7 +1,0 @@
-ingress:
-  hosts:
-    - test.example.com
-
-env:
-  SENTRY_ENVIRONMENT: test
-  DATABASE_URL:

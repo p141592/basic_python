@@ -1,7 +1,7 @@
 # Python projects template
 
-[![asciicast](https://asciinema.org/a/296455.svg)](https://asciinema.org/a/296455)
+[![asciicast](https://asciinema.org/a/298747.svg)](https://asciinema.org/a/298747)
 
 ### Run
 
-`$ make run`
+`$ make gcloud-deploy`

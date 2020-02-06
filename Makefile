@@ -1,28 +1,26 @@
 # Registry where you want store your Docker images
-DOCKER_REGISTRY = p141592
-PORTS = 8000:8000
+DOCKER_REGISTRY = gcr.io/${GCLOUD-PROJECT-ID}
+PORTS = 8080:8080
 TAG = latest
-PROJECT_NAME = basic_python
+PROJECT_NAME = basic-python
+GCLOUD-PROJECT-ID = home-260209
 ENV = dev
+MEMORY_LIMIT = 50M
+ENV_VARIABLES = $(shell ./utils/convert_env.py $(shell pwd)/.env)
 
-requirements:
-	pip install --upgrade pip
-	pip install poetry
-	poetry install
+# local
+unpack: activate
+	poetry install 
 
-unpack: requirements
+activate: venv 
+	pip install --user poetry
+	poetry env use venv/bin/python
 
-build: freez
-	docker build -t ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} .
-
-run: build
-	docker run -p ${PORTS} --rm --env-file .env ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
-
-push: build
-	docker push ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+venv:
+	python -m venv venv
 
 test:
-	pytest -vv tests${TEST_CASE}
+	pytest -vv ${TEST_CASE}
 
 lock:
 	poetry lock 
@@ -30,5 +28,19 @@ lock:
 freez: lock
 	poetry export -f requirements.txt > requirements.pip
 
-helm: freez push
-	helm upgrade -i ${ENV}-${PROJECT_NAME} --wait --set image.tag=${TAG} -f k8s/${ENV}-values.yaml k8s/${PROJECT_NAME}
+# pre production
+build: test freez
+	docker build -t ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} .
+
+run: build
+	docker run -it -p ${PORTS} --rm --env-file .env ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+
+push: build
+	docker push ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG}
+
+# deploy
+gcloud-deploy: push
+	gcloud run deploy ${PROJECT_NAME} --image ${DOCKER_REGISTRY}/${PROJECT_NAME}:${TAG} --memory ${MEMORY_LIMIT} --platform managed --set-env-vars ${ENV_VARIABLES}
+
+gcloud-remove:
+	gcloud run service delete ${PROJECT_NAME}
