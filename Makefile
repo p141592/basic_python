@@ -25,25 +25,22 @@ activate:
 	poetry shell
 
 test:
-	pytest -vv ${TEST_CASE}
+	PYTHONPATH=$(shell pwd)/project poetry run pytest -vv ${TEST_CASE}
 
 lock:
 	poetry lock
-
-freez: lock
-	poetry export -f requirements.txt > requirements.pip
 
 linter:
 	PYTHONPATH=$(shell pwd)/project poetry run black .
 
 # pre production
-build: linter test
+build:
 	docker build -t ${IMG}:${TAG} .
 
 run: build
 	docker run -it -p ${PORTS} --rm --env-file .env ${IMG}:${TAG}
 
-push: freez build
+push: linter test lock build
 	docker push ${IMG}:${TAG}
 
 # deploy

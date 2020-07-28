@@ -1,21 +1,28 @@
-FROM python:3.7 AS build-env
-
-COPY requirements.pip .
-
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r /requirements.pip
-
-# Собираю инстанс самого проекта
-FROM python:3.7-slim as project
-COPY --from=build-env /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
-
-COPY ./src /opt/application/
+FROM python:3.8 as build
+ENV PYTHONPATH /opt/application/
 ENV PATH /opt/application/:$PATH
+ENV PIP_DEFAULT_TIMEOUT=100 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    POETRY_VERSION=1.0.5
 
 WORKDIR /opt/application/
 
-ENV PYTHONPATH /usr/local/lib/python3.7/site-packages
-ENV PYTHONPATH /opt/application/
+RUN pip install "poetry==$POETRY_VERSION"
+RUN poetry config virtualenvs.create false
+COPY poetry.lock .
+COPY pyproject.toml  .
+RUN poetry install --no-dev --no-root
 
-CMD python hello.py
+FROM python:3.8-slim as project
+COPY --from=build /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages
 
+RUN useradd -g users user
+USER user
+WORKDIR /opt/application/
+
+ENV PYTHONPATH /usr/local/lib/python3.8/site-packages:/opt/application/
+
+COPY src /opt/application/
+
+CMD python app.py
