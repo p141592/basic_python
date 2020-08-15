@@ -25,13 +25,13 @@ activate:
 	poetry shell
 
 test:
-	PYTHONPATH=$(shell pwd)/project poetry run pytest -vv ${TEST_CASE}
+	PYTHONPATH=$(shell pwd)/src poetry run pytest -vv ${TEST_CASE}
 
 lock:
 	poetry lock
 
 linter:
-	PYTHONPATH=$(shell pwd)/project poetry run black .
+	PYTHONPATH=$(shell pwd)/src poetry run black .
 
 # pre production
 build:
